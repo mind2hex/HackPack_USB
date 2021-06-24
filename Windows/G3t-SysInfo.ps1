@@ -80,6 +80,12 @@ function System-Info {
    	   "" | tee $Output_file -Append                               
 	   }
 	}
+
+	"   -----------> Arp Cache  Info: "                                  | tee $Output_file -Append
+	ForEach($Item in @(arp -a)){
+	"              $($Item)"      | tee $Output_file -Append	
+	}
+
 	"" | tee $Output_file -Append
 	   
 	
@@ -106,6 +112,10 @@ function System-Info {
 	ForEach($PrivilegedUser in (Get-LocalGroupMember -Name $PrivilegedGroupName).Name){
 	"              {0} " -f $PrivilegedUser | tee $Output_file -Append
 	}
+	"" | tee $Output_file -Append
+
+	"[!] Installed Programs: "   | tee $Output_file -Append	
+	Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table -AutoSize | tee $Output_file -Append
     }			
 
     end {
