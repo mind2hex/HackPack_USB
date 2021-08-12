@@ -1,2 +1,5 @@
 # Ignoring main Loot file
 LOOT*
+
+# Ignoring emacs db's
+*~
