@@ -52,7 +52,7 @@ banner(){
 }
 
 help(){
-    echo "usage: process-monitor.sh [options] "
+    echo "usage: enumerate-process.sh [options] "
     echo "Options:                            "
     echo "     -i,--interval <n>       : Specify refresh interval. [WARNING]    "
     echo "                               Low interval values may use a lot of resources"
