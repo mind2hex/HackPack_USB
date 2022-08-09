@@ -61,7 +61,7 @@ banner(){
 }
 
 help(){
-    echo 'usage: ./lan-monitor [OPTIONS] {-i|--interface}'
+    echo 'usage: ./network-monitor.sh [OPTIONS] {-i|--interface}'
     echo "Description:"
     echo "   Files generated and used by this program:            "
     echo "     -->  $HOME/.config/lan_DB/<SSID>                   "
@@ -88,18 +88,18 @@ usage(){
     echo "# To scan a network"
     echo "# This is the first thing you need to do"
     echo "# Simply use the flag -i <interface> -r <ip/range>"
-    echo "  $ ./lan-monitor -i eth0 -r 192.168.0.1/24 "
+    echo "  $ ./network-monitor.sh -i eth0 -r 192.168.0.1/24 "
     echo "-----------------------------------------------------"
     echo "# To add an address to Authorized group and to remove"
     echo "# the same address"
-    echo "  $ ./lan-monitor --add ff:ff:ff:ff:ff:ff "
-    echo "  $ ./lan-monitor --remove ff:ff:ff:ff:ff:ff "
+    echo "  $ ./network-monitor.sh --add ff:ff:ff:ff:ff:ff "
+    echo "  $ ./network-monitor.sh --remove ff:ff:ff:ff:ff:ff "
     echo "-----------------------------------------------------"
     echo "# To name a host in Authorized group"
-    echo "  $ ./lan-monitor --name-host home ff:ff:ff:ff:ff:ff "
+    echo "  $ ./network-monitor.sh --name-host home ff:ff:ff:ff:ff:ff "
     echo "-----------------------------------------------------"    
     echo "# Printing Mode, just run the program without args"
-    echo "  $ ./lan-monitor "
+    echo "  $ ./network-monitor.sh "
     echo "-----------------------------------------------------"    
     exit 0
 }
