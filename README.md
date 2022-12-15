@@ -1,6 +1,6 @@
-# USB_TOOLS
+# pendrive_tools
 
-To0lkit for quick info gathering from USB.
+Scripts to clone in a pendrive.
 
 ## Description
 
