@@ -298,7 +298,7 @@ argument_processor_update_arrays(){
 
 argument_processor_update_temporal_file(){
     for i in $(seq 0 $((${#userArr[@]} - 1)));do
-	line=$(printf "\e[1m%-8s  \e[1;31m %-8s   \e[0m%-50s" "${userArr[$i]}" "${pidArr[$i]}" "${cmdArr[$i]:0:50}")
+	line=$(printf "\e[1m%-8s  \e[1;31m %-8s   \e[0m%-50s" "${userArr[$i]}" "${pidArr[$i]}" "${cmdArr[$i]}")
 	if [[ -z $(cat "$TempFile" | grep -w "${pidArr[$i]}") ]];then
 
 	    ## Checking for Match var
