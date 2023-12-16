@@ -1,6 +1,6 @@
-# pendrive_tools
+# HackPack_USB
 
-Scripts to clone in a pendrive.
+Scripts to clone in a pendrive for pentesting purpose.
 
 ## Description
 
