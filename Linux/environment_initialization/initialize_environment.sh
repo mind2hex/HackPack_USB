@@ -125,91 +125,24 @@ tools_preconfiguration(){
 
 # Install tools using package manager
 install_tools_via_pkg_manager(){
-    general_use_tools=(
-	    docker.io docker-compose terminator conky-all neofetch
-    )
-    programming_tools=(
-	    python3 python3-venv python3-pip emacs gdb git code build-essential
-    )
-    network_hacking_tools=(
-	    nmap reaver wifite aircrack-ng  gnuradio wireshark gqrx-sdr netdiscover kismet bettercap
-    )
-    anonymizing_tools=(
-	    tor torbrowser-launcher proxychains4 macchanger
-    )
-    web_hacking_tools=(
-	    gobuster wfuzz sqlmap
-    )
-    security_tools=(
-	    rkhunter chkrootkit clamav hydra john hashcat
-    )
-
-    log_msg "Installing general use tools"
-    for tool in ${general_use_tools[@]};do
-        echo -e -n "\t - Installing ${tool}..."
-        sudo ${PACKAGE_MANAGER_INSTALL} ${tool}  >/dev/null 2>&1
-        if [[ $? -ne 0 ]];then
-            echo -e -n "${RED} Error, unable to install.${END_COLOR}\n"
-        else
-            echo ""
-        fi
+    while [[ $# -gt 0 ]];do
+        declare -n tools=$1
+        log_msg "Installing $1"
+        for tool in ${tools[@]};do
+            echo -e -n "\t - Installing ${tool}..."
+            if [[ -z $( which ${tool} ) ]];then
+                sudo ${PACKAGE_MANAGER_INSTALL} ${tool}  >/dev/null 2>&1
+                if [[ $? -ne 0 ]];then
+                    echo -e "${RED} Error, unable to install.${END_COLOR}"
+                else
+                    echo ""
+                fi
+            else
+                echo "Already installed"
+            fi
+        done
+        shift
     done
-
-    log_msg "Installing programming tools"
-    for tool in ${programming_tools[@]};do
-        echo -e -n "\t - Installing ${tool}..."
-        sudo ${PACKAGE_MANAGER_INSTALL} ${tool} >/dev/null 2>&1
-        if [[ $? -ne 0 ]];then
-            echo -e -n "${RED} Error, unable to install.${END_COLOR}\n"
-        else
-            echo ""
-        fi
-    done
-
-    log_msg "Installing network hacking tools"
-    for tool in ${network_hacking_tools[@]};do
-        echo -e -n "\t - Installing ${tool}..."
-        sudo ${PACKAGE_MANAGER_INSTALL} ${tool} >/dev/null 2>&1
-        if [[ $? -ne 0 ]];then
-            echo -e -n "${RED} Error, unable to install.${END_COLOR}\n"
-        else
-            echo ""
-        fi
-    done
-
-    log_msg "Installing anonymizing tools"
-    for tool in ${anonymizing_tools[@]};do
-        echo -e -n "\t - Installing ${tool}..."
-        sudo ${PACKAGE_MANAGER_INSTALL} ${tool} >/dev/null 2>&1
-        if [[ $? -ne 0 ]];then
-            echo -e -n "${RED} Error, unable to install.${END_COLOR}\n"
-        else
-            echo ""
-        fi
-    done
-
-    log_msg "Installing web hacking tools"
-    for tool in ${web_hacking_tools[@]};do
-        echo -e -n "\t - Installing ${tool}..."
-        sudo ${PACKAGE_MANAGER_INSTALL} ${tool} >/dev/null 2>&1
-        if [[ $? -ne 0 ]];then
-            echo -e -n "${RED} Error, unable to install.${END_COLOR}\n"
-        else
-            echo ""
-        fi
-    done
-
-    log_msg "Installing security tools"
-    for tool in ${security_tools[@]};do
-        echo -e -n "\t - Installing ${tool}..."
-        sudo ${PACKAGE_MANAGER_INSTALL} ${tool} >/dev/null 2>&1
-        if [[ $? -ne 0 ]];then
-            echo -e -n "${RED} Error, unable to install.${END_COLOR}\n"
-        else
-            echo ""
-        fi
-    done
-
 }
 
 # install tools cloning git repositories
@@ -287,12 +220,33 @@ additional_configurations(){
     fi
 }
 
+main (){
+    general_tools=(
+	    docker.io docker-compose terminator conky-all neofetch
+    )
+    programming_tools=(
+	    python3 python3-venv python3-pip emacs gdb git code build-essential
+    )
+    network_tools=(
+	    nmap reaver wifite aircrack-ng  gnuradio wireshark gqrx-sdr netdiscover kismet bettercap
+    )
+    anonymizing_tools=(
+	    tor torbrowser-launcher proxychains4 macchanger
+    )
+    web_tools=(
+	    gobuster wfuzz sqlmap
+    )
+    security_tools=(
+	    rkhunter chkrootkit clamav hydra john hashcat
+    )
 
+    detect_package_manager
+    #tools_preconfiguration  # before update_upgrade to reflect changes in sources
+    #update_upgrade    
+    #setup_directories
+    install_tools_via_pkg_manager "general_tools" "programming_tools" "network_tools" "anonymizing_tools" "web_tools" "security_tools"
+    #install_tools_via_git
+    exit 0
+}
 
-detect_package_manager
-#tools_preconfiguration  # before update_upgrade to reflect changes in sources
-#update_upgrade    
-#setup_directories
-#install_tools_via_pkg_manager
-#install_tools_via_git
-exit 0
+main 
