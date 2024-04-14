@@ -34,6 +34,7 @@ HackPack_USB
 │       ├── enumerate-process.sh
 │       ├── enumerate-system.sh
 │       ├── network-monitor.sh
+│       ├── network-scan.sh
 │       └── network-wap-scan.sh
 └── Windows
 ```
@@ -49,5 +50,7 @@ Simple process monitor that inspect all executed processess during a period of t
 Script to automatically enumerate system information and copy users files from `/home` folder to `./LOOT` folder.
 #### network-monitor.sh
 Script to inspect network devices. This script allow us to put devices in two different groups, one group for known devices and another group for unknown devices so we can figure when a new device (unknown) is connected to our network
+#### network-scan.sh
+Script to simply enumerate active hosts in the network specified. This script uses different tools commonly used in Linux distribution like ping, arping, etc.
 #### network-wap-scan.sh
 Script to scan near Access Points using a wireless interface.

@@ -33,24 +33,6 @@ VERSION="[v1.00]"
 ##   BASIC FUNCTIONS       ##
 #############################    
 
-banner(){
-    echo 
-    echo -e "\e[32m" '     dMMMMb  dMMMMb  .aMMMb  .aMMMb  dMMMMMP .dMMMb  .dMMMb '
-    echo             '   dMP.dMP dMP.dMP dMP"dMP dMP"VMP dMP     dMP" VP dMP" VP  '
-    echo             '  dMMMMP" dMMMMK" dMP dMP dMP     dMMMP    VMMMb   VMMMb    '
-    echo             ' dMP     dMP"AMF dMP.aMP dMP.aMP dMP     dP .dMP dP .dMP    '
-    echo             'dMP     dMP dMP  VMMMP"  VMMMP" dMMMMMP  VMMMP"  VMMMP"     '
-    echo -e "\e[31m" '                                                            '
-    echo             '    dMMMMMMMMb .aMMMb  dMMMMb  dMP dMMMMMMP .aMMMb  dMMMMb  '
-    echo             '   dMP"dMP"dMPdMP"dMP dMP dMP amr    dMP   dMP"dMP dMP.dMP  '
-    echo             '  dMP dMP dMPdMP dMP dMP dMP dMP    dMP   dMP dMP dMMMMK"   '
-    echo             ' dMP dMP dMPdMP.aMP dMP dMP dMP    dMP   dMP.aMP dMP"AMF    '
-    echo             'dMP dMP dMP VMMMP" dMP dMP dMP    dMP    VMMMP" dMP dMP     '
-    echo -e "\e[0m"
-    echo "Version: $VERSION"
-    echo "Author:  mind2hex"
-}
-
 help(){
     echo "usage: enumerate-process.sh [options] "
     echo "Options:                            "
@@ -313,12 +295,12 @@ argument_processor_update_temporal_file(){
 ##      STARTING POINT     ##
 #############################    
 
-banner
 argument_parser "$@"
 argument_checker "$INTERVAL" "$USERSPEC" "$PID" "$LOGFILE"
 argument_processor "$INTERVAL" "$USERSPEC" "$PID" "$LOGFILE" "$ExcludeSys" "$ExcludeProcess"
 exit 0
 
+# TODO:
 # fix ${string:="test"} execution problem
 # develop Match utility to allow more than one matching keyword
 # delete points that are replacing spaces in the output lines

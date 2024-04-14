@@ -3,7 +3,7 @@
 ## @author:       Johan Alexis
 ## @github:       https://gihub.com/mind2hex
 ## Project Name:  network-monitor.sh
-## Description:   script to enumerate hosts connected to the network
+## Description:   script to monitor hosts connected to the network.
 ## @style:        https://github.com/fryntiz/bash-guide-style
 ## @licence:      https://www.gnu.org/licences/gpl.txt
 ##
@@ -25,40 +25,12 @@
 ##     CONSTANTS           ##
 #############################
 
-VERSION="[v1.09]"
-AUTHOR="mind2hex"
-
 regEx="(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-b9]|[01]?[0-9][0-9]?)"
 macRegEx="[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}"
 
 #############################
 ##     BASIC FUNCTIONS     ##
 #############################
-
-banner(){
-    echo -e " \e[31m"
-    echo '                                    A   '
-    echo '                                   /!\  '
-    echo '                                  / ! \ '
-    echo '                           /\     )___( '
-    echo '                          (  `.____(_)_________'
-    echo '                          |           __..--"" '
-    echo '                          (       _.-|  '
-    echo "    __    ___    _   __    \    ,' | |  "
-    echo "   / /   /   |  / | / /     \  /   | |  "
-    echo "  / /   / /| | /  |/ /       \(    | |  "
-    echo " / /___/ ___ |/ /|  /         \`    | |  "
-    echo "/_____/_/  |_/_/ |_/               | |  "
-    echo -e " \e[32m "
-    echo "    __  _______  _   ________________  ____  "
-    echo "   /  |/  / __ \/ | / /  _/_  __/ __ \/ __ \ "
-    echo "  / /|_/ / / / /  |/ // /  / / / / / / /_/ / "
-    echo " / /  / / /_/ / /|  // /  / / / /_/ / _, _/  "
-    echo "/_/  /_/\____/_/ |_/___/ /_/  \____/_/ |_|  "
-    echo -e -n " \e[0m"
-    echo "Version: $VERSION"
-    echo " AUTHOR: mind2hex"
-}
 
 help(){
     echo 'usage: ./network-monitor.sh [OPTIONS] {-i|--interface}'
@@ -538,7 +510,6 @@ DB_checkSum_update(){
 #############################
 ##      STARTING POINT     ##
 #############################
-banner
 argument_parser "$@"
 argument_checker "$@"
 
