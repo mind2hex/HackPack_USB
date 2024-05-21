@@ -156,14 +156,15 @@ install_tools(){
 
     # tools categories here, add or delete tools if needed
     programming_tools=( python3 python3-venv python3-pip emacs git gdb )
+    virtualization_tools=( qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager )
     container_tools=( docker.io docker-compose )
-    system_tools=( build-essential terminator conky-all neofetch htop tree )
+    system_tools=( build-essential terminator conky-all neofetch htop tree openssh-server )
     network_analysis_tools=( wireshark netdiscover  )
     network_security_tools=( aircrack-ng reaver bettercap )
     radio_tools=( gnuradio gqrx-sdr rtl-sdr )
     web_security_tools=( wfuzz sqlmap )
     anonymity_tools=( tor torbrowser-launcher proxychains4 macchanger )
-    cracking_tools=( hydra john hashcat hashcat-nvidia )
+    cracking_tools=( hydra john hashcat hashcat-nvidia hcxtools crunch )
     malware_detection_tools=( rkhunter chkrootkit clamav )
     github_tools=(
         exploitdb@https://gitlab.com/exploit-database/exploitdb.git@/opt/exploit-database
@@ -179,7 +180,17 @@ install_tools(){
     install_tools_with_pkg_manager "programming_tools"
     if [[ "${choice}" = "y" ]];then
         # tools configuration here
+	    # python3 libraries installation here
         echo -n ""
+    fi
+
+    tools=( ${virtualization_tools[@]} )
+    install_tools_with_pkg_manager "virtualization_tools"
+    if [[ "${choice}" = "y" ]];then
+        # tools configuration here
+        # add user to libvirt group to manage virtual machines without root permissions
+        sudo adduser $(whoami) libvirt
+        sudo adduser $(whoami) kvm
     fi
     
     tools=( ${container_tools[@]} )    
@@ -295,14 +306,14 @@ install_wordlists(){
 additional_configurations(){
     log_msg "Copying ./bash_aliases to ~/.bash_aliases"
     cp ./bash_aliases ~/.bash_aliases
-    if [[ -z $( grep "source .bash_aliases" ~/.bashrc ) ]];then
-        echo -e "\nsource ./bash_aliases" >> ~/.bashrc
+    if [[ -z $( grep ". ~/.bash_aliases" ~/.bashrc ) ]];then
+        echo -e "\n. ~/.bash_aliases" >> ~/.bashrc
     fi
 
     log_msg "Copying ./bash_functions to ~/.bash_functions"
     cp ./bash_functions ~/.bash_functions
-    if [[ -z $( grep -o "source .bash_functions" ~/.bashrc ) ]];then
-        echo -e "\nsource ./bash_functions" >> ~/.bashrc
+    if [[ -z $( grep -o ". ~/.bash_functions" ~/.bashrc ) ]];then
+        echo -e "\n. ~/.bash_functions" >> ~/.bashrc
     fi
 
     log_msg "Adding wifi pineapple address to /etc/hosts"
@@ -322,7 +333,11 @@ main (){
     install_tools
     install_wordlists
     additional_configurations
+
     exit 0
 }
 
 main 
+
+# add ngrok to tools
+#  curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
