@@ -1,3 +1,0 @@
-# ALIASES
-alias clear_cache='echo 3 | sudo tee -a /proc/sys/vm/drop_caches'
-
