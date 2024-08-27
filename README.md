@@ -26,10 +26,6 @@ python3 --version
 HackPack_USB
 .
 ├── Linux
-│   ├── environment_initialization
-│   │   ├── conky.conf
-│   │   ├── initialize_environment.sh
-│   │   └── profile
 │   └── scripts
 │       ├── enumerate-process.sh
 │       ├── enumerate-system.sh
@@ -39,9 +35,6 @@ HackPack_USB
 └── Windows
 ```
 ## Linux
-### environment_initialization
-This directory contains the script `initialize_environment.sh` used to install automatically all tools i need to perform some security tasks. File `conky.conf` and `profile` are used by this script so don't touch it.
-
 ### scripts
 This directory contains some useful bash scripts.
 #### enumerate-process.sh
