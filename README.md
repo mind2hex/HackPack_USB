@@ -27,6 +27,7 @@ HackPack_USB
 .
 ├── Linux
 │   └── scripts
+|       ├── bashdoor.sh
 │       ├── enumerate-process.sh
 │       ├── enumerate-system.sh
 │       ├── network-monitor.sh
@@ -37,6 +38,8 @@ HackPack_USB
 ## Linux
 ### scripts
 This directory contains some useful bash scripts.
+#### bashdoor.sh
+Script to deploy simple and easily detectable backdoors using different techniques.
 #### enumerate-process.sh
 Simple process monitor that inspect all executed processess during a period of time.
 #### enumerate-system.sh
